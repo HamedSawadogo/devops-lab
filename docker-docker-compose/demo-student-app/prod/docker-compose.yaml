@@ -1,28 +1,38 @@
-version: '3.8'
 services:
   app:
     image: sawadogoxxx/student-app:v1.0
     ports:
       - "80:9000"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://studentdb.cjea4soayf0z.eu-west-3.rds.amazonaws.com:5432/postgres
-      SPRING_DATASOURCE_USERNAME: student
-      SPRING_DATASOURCE_PASSWORD: student123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://stduent-database:5432/studentdb
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - student-net
+    depends_on:
+      - stduent-database
   
   # base de données
-  postgres:
-    image: postgres:16-alpine
-    container_name: student-db
+  stduent-database:
+    image: postgres:16.14
     environment:
-      POSTGRES_DB: studentdb
-      POSTGRES_USER: student
-      POSTGRES_PASSWORD: student123
-    ports:
-      - "5460:5432"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - student-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U student -d studentdb"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+ student-net:
+  
+  
