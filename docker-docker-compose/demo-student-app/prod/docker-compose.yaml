@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    image: sawadogoxxx/student-app:v1.0
+    ports:
+      - "80:9000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://studentdb.cjea4soayf0z.eu-west-3.rds.amazonaws.com:5432/postgres
+      SPRING_DATASOURCE_USERNAME: student
+      SPRING_DATASOURCE_PASSWORD: student123
+  
+  # base de données
+  postgres:
+    image: postgres:16-alpine
+    container_name: student-db
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: student
+      POSTGRES_PASSWORD: student123
+    ports:
+      - "5460:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student -d studentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
