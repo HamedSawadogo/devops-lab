@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vote en ligne</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 360px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .results {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .reset {
+      background: red;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>🗳️ Vote en ligne</h1>
+
+    <h3>Quel est ton langage préféré ?</h3>
+
+    <button onclick="vote('JavaScript')">JavaScript</button>
+    <button onclick="vote('Python')">Python</button>
+    <button onclick="vote('Java')">Java</button>
+
+    <div class="results">
+      <h3>Résultats</h3>
+      <p>JavaScript : <span id="js">0</span></p>
+      <p>Python : <span id="py">0</span></p>
+      <p>Java : <span id="java">0</span></p>
+
+      <button class="reset" onclick="resetVotes()">Réinitialiser</button>
+    </div>
+  </div>
+
+  <script>
+    let votes = {
+      JavaScript: 0,
+      Python: 0,
+      Java: 0
+    };
+
+    // Charger les votes si existants
+    if (localStorage.getItem("votes")) {
+      votes = JSON.parse(localStorage.getItem("votes"));
+      updateUI();
+    }
+
+    function vote(lang) {
+      votes[lang]++;
+      save();
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("js").innerText = votes.JavaScript;
+      document.getElementById("py").innerText = votes.Python;
+      document.getElementById("java").innerText = votes.Java;
+    }
+
+    function save() {
+      localStorage.setItem("votes", JSON.stringify(votes));
+    }
+
+    function resetVotes() {
+      votes = {
+        JavaScript: 0,
+        Python: 0,
+        Java: 0
+      };
+      save();
+      updateUI();
+    }
+  </script>
+
+</body>
+</html>

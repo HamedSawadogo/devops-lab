@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+/prod/.env.prod
+/prod/my-cluster-key.pem
+
 ### STS ###
 .apt_generated
 .classpath
