@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: student-app
+  template:
+    metadata:
+      labels:
+        app: student-app
+    spec:
+      containers:
+      - name: student-app
+        image: sawadogoxxx/student-app:v1.0
+        imagePullPolicy: Never
+        volumeMounts:
+          - mountPath: /etc/students
+            name: student-app-pvc
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 9000
+      volumes:
+        - name: student-app-pvc
+          persistentVolumeClaim:
+            claimName: student-app-pvc

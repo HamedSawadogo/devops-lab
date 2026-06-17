@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stuet-app-db
+  labels:
+    app: stuet-app-db
+spec:
+  selector:
+    matchLabels:
+      app: stuet-app-dbstuet-app-db
+  template:
+    metadata:
+      name: stuet-app-db
+      labels:
+        app: stuet-app-db
+    spec:
+      containers:
+        - name: stuet-app-db
+          image: postgres:16.14
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-configs
+                  key: POSTGRES_DB
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-configs
+                  key: student123
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: student-app-configs
+                  key: student123
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+      restartPolicy: Always
+      

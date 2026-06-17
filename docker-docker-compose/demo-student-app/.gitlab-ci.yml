@@ -1,0 +1,57 @@
+stages:
+  - build
+  - test
+  - package
+  - deploy-dev
+
+variables:
+  IMAGE_NAME: "student-app"
+
+build_project:
+  stage: build
+  image: maven:3.9.9-eclipse-temurin-21-alpine
+
+  script:
+    - echo "build project"
+    - mvn clean package -DskipTests
+    - echo "build finished"
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 30 days
+
+test_project:
+  stage: test
+  image: maven:3.9.9-eclipse-temurin-21-alpine
+  script:
+    - mvn test
+
+package_project:
+  stage: package
+  image: docker:latest
+
+  services:
+    - docker:dind
+
+  script:
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build -t $IMAGE_NAME .
+    - docker tag $IMAGE_NAME sawadogoxxx/student-app:v1
+    - docker push sawadogoxxx/student-app:v1
+
+#deploy_dev:
+#  stage: deploy-dev
+#  image: ubuntu:latest
+#
+#  before_script:
+#    - apt-get update
+#    - apk add --no-cache openssh-client
+#    - chmod 400 $EC2_KEY
+#
+#  script:
+#    - sudo apt-get install openssh-client
+#    - |
+#      ssh -o StrictHostKeyChecking=yes -i $EC2_KEY $EC2_HOSHT "
+#      apt-get install docker.io -y &&
+#
+#     "
